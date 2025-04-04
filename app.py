@@ -73,10 +73,14 @@ st.markdown("## 🧮 Enter the demand matrix")
 demands = []
 for i in range(nItems):
     row = st.text_input(f"Demand for item {i+1} (comma-separated, 0 or 1)", value="0,"*nPeriods)
-    demand_row = tuple(map(int, row.strip().split(",")))
-    if len(demand_row) != nPeriods:
-        st.error(f"La ligne de l’item {i+1} doit contenir exactement {nPeriods} éléments.")
-    demands.append(demand_row)
+    try:
+        demand_row = tuple(int(x) for x in row.strip().split(",") if x.strip() != "")
+        if len(demand_row) != nPeriods:
+            st.error(f"❌ La ligne de l’item {i+1} doit contenir exactement {nPeriods} éléments.")
+        else:
+            demands.append(demand_row)
+    except ValueError:
+        st.error(f"❌ Erreur de saisie dans la ligne de l’item {i+1}. Utilise uniquement des 0 ou 1 séparés par des virgules.")
 
 use_costs = st.checkbox("🔧 Use different stocking costs per item?")
 if use_costs:
